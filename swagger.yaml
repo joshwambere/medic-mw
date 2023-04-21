@@ -1,0 +1,58 @@
+
+paths:
+  /auth/signup:
+    post:
+      tags:
+        - Auth
+      summary: Add User
+      parameters:
+        - name: body
+          in: body
+          description: user information
+          required: true
+          schema:
+            $ref: '#/definitions/users'
+      responses:
+        201:
+          description: 'Created'
+        400:
+          description: 'Bad Request'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+  
+# definitions
+definitions:
+  users:
+    type: object
+    required:
+      - name
+      - email
+      - userName
+      - employeeId
+      - password
+      - profileImage
+    properties:
+      name:
+        type: string
+        description: Name
+      email:
+        type: string
+        description: user Email
+      userName:
+        type: string
+        description: User Name
+      employeeId:
+        type: string
+        description: Employee Id
+      profileImage:
+        type: string
+        description: Profile Image
+      password:
+        type: string
+        description: user Password
+
+schemes:
+  - https
+  - http
