@@ -1,6 +1,6 @@
 
 import {CreateUserDto} from "@dtos/user.dto";
-import {SECRET_KEY, TOKEN_EXPIRES_IN} from "@config";
+
 
 
 class AuthService{

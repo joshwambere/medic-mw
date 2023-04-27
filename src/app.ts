@@ -1,7 +1,7 @@
 import express from 'express';
 import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUi from 'swagger-ui-express';
-import { NODE_ENV, SOCKET_PORT } from '@config';
+import { NODE_ENV } from '@config';
 import { Routes } from '@interfaces/routes.interface';
 import cors from 'cors';
 import cookieParser from "cookie-parser";
@@ -43,23 +43,7 @@ class App {
         });
     }
     private initializeMiddlewares() {
-        this.app.use(cors({
-            credentials: true,
-            origin: (origin, callback) => {
-                const whiteList = ["http://localhost:3005", "http://localhost:3000", "http://localhost:4000"];
-                if (whiteList.indexOf(origin) !== -1) {
-                    callback(null, true);
-                } else {
-                    if (!origin && this.env === 'development') {
-                        callback(null, true);
-                    } else {
-                        callback(new Error('Not allowed by CORS'));
-                    }
-
-                }
-            },
-        }
-        ));
+        this.app.use(cors());
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: true }));
         this.app.use(cookieParser());

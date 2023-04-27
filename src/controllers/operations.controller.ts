@@ -1,74 +1,101 @@
-import {NextFunction, Request, Response} from "express";
-import {ProjectDto} from "@dtos/project.dto";
-import ProjectService from "@/services/operations.service";
+import { NextFunction, Request, Response } from 'express';
+import AuthService from '@services/auth.service';
+import SendRequest from '@services/httpService';
+import { BACKEND_URL } from '@config';
 
-class ProjectController{
-    public projectService = new ProjectService();
-
-    public create = async (req: Request, res: Response, next: NextFunction) => {
+class OperationController {
+    public authService = new AuthService();
+    public getPatients = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const project:ProjectDto = req.body;
-            const newProject = await this.projectService.save(project);
-            res.status(201).json({data: newProject, message:'Project created'})
+            const info = {
+                url: `${BACKEND_URL}/patients`,
+                method: "GET",
+                data: req.body,
+                headers: "application/json"
+            }
+            const response = await SendRequest(info)
+            res.status(201).send({ response: response.data });
         } catch (error) {
-            next(error)
+            res.status(error.status).send(error.data);
         }
     };
 
-    public getAll = async (req: Request, res: Response, next: NextFunction) => {
+
+    public getPhysicians = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const projects = await this.projectService.getAll();
-            res.status(200).json({data: projects, message:'Projects retrieved'})
-        }catch (e) {
-            next(e)
+            const info = {
+                url: `${BACKEND_URL}/physicians`,
+                method: "GET",
+                data: req.body,
+                headers: null
+            }
+            const response = await SendRequest(info)
+            res.send({ response: response.data });
+        } catch (error) {
+            res.status(error.status).send(error.data);
         }
     }
 
-
-    /*
-    * Invite contributor on a project
-    * @body {email, projectId}
-    * @return {message}
-    */
-    public inviteContributor = async (req:Request, res: Response, next:NextFunction)=>{
-        const {email, projectId} = req.body
+    public getPharamcist = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            await this.projectService.inviteContributor(email, projectId)
-            res.status(200).json({message:'Invitation sent'})
-        }catch (e) {
-            next(e)
+            const info = {
+                url: `${BACKEND_URL}/pharmacist`,
+                method: "GET",
+                data: req.body,
+                headers: null
+            }
+            const response = await SendRequest(info)
+            res.send({ response: response.data });
+        } catch (error) {
+            res.status(error.status).send(error.data);
         }
     }
 
-    /*
-    * Invite Project manager on a project
-    * @body {email, projectId}
-    * @return {message}
-    */
-    public invitePm = async (req:Request, res: Response, next:NextFunction)=>{
-        const {email, projectId} = req.body
+    public consultation = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            await this.projectService.invitePM(email, projectId)
-            res.status(200).json({message:'PM Added'})
-        }catch (e){
-            next(e)
+            const info = {
+                url: `${BACKEND_URL}/physicians`,
+                method: "POST",
+                data: req.body,
+                headers: req.headers
+            }
+            const response = await SendRequest(info)
+            res.send({ response: response.data });
+        } catch (error) {
+            res.status(error.status).send(error.data);
         }
     }
 
-    /*
-    * suspend a project
-    * @params {projectId}
-    * @return {message}
-    */
-    public suspendProject = async (req:Request, res: Response, next:NextFunction)=>{
+    public grantPermission = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const {projectId} = req.params
-            await this.projectService.suspendProject(projectId)
-            res.status(200).json({message:'Project suspended'})
-        }catch (e) {
-            next(e.message)
+            const info = {
+                url: `${BACKEND_URL}/patients`,
+                method: "POST",
+                data: req.body,
+                headers: req.headers
+            }
+            const response = await SendRequest(info)
+            res.send({ response: response.data });
+        } catch (error) {
+            res.status(error.status).send(error.data);
+        }
+    }
+
+    public prescribe = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const info = {
+                url: `${BACKEND_URL}/pharmacist`,
+                method: "POST",
+                data: req.body,
+                headers: req.headers
+            }
+            const response = await SendRequest(info)
+            res.send({ response: response.data });
+        } catch (error) {
+            res.status(error.status).send(error.data);
         }
     }
 }
 
-export default ProjectController;
+
+export default OperationController;
