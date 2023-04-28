@@ -1,7 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
 import AuthService from '@services/auth.service';
 import SendRequest from '@services/httpService';
-import { BACKEND_URL } from '@config';
+import { BACKEND_URL, SECRET_KEY } from '@config';
+import { verify } from 'jsonwebtoken';
+import { TokenData } from '@/interfaces/user.interface';
 
 class OperationController {
     public authService = new AuthService();
@@ -57,8 +59,26 @@ class OperationController {
                 url: `${BACKEND_URL}/physicians`,
                 method: "POST",
                 data: req.body,
-                headers: req.headers
+                headers: { Autorization: req.headers.authorization }
             }
+            const response = await SendRequest(info)
+            res.send({ response: response.data });
+        } catch (error) {
+            res.status(error.status).send(error.data);
+        }
+    }
+
+    public getConsultations = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const decoded = (await verify(req.headers.authorization, SECRET_KEY)) as TokenData;
+            const id = decoded.jti
+            const info = {
+                url: `${BACKEND_URL}/consultation`,
+                method: "POST",
+                data: {id},
+                headers: { Autorization: req.headers.authorization }
+            }
+            
             const response = await SendRequest(info)
             res.send({ response: response.data });
         } catch (error) {
@@ -72,9 +92,11 @@ class OperationController {
                 url: `${BACKEND_URL}/patients`,
                 method: "POST",
                 data: req.body,
-                headers: req.headers
+                headers: { Authorization: req.headers.authorization }
             }
+
             const response = await SendRequest(info)
+        
             res.send({ response: response.data });
         } catch (error) {
             res.status(error.status).send(error.data);

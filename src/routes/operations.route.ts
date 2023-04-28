@@ -17,6 +17,7 @@ class ProjectRoute implements Routes {
         this.router.get(`${this.path}physician`, authGuard, this.projectController.getPhysicians);
         this.router.get(`${this.path}pharmacist`, patientGuard, this.projectController.getPharamcist);
         this.router.post(`${this.path}physician/consultation`, physicianGuard, this.projectController.consultation);
+        this.router.get(`${this.path}patient/consultation`, patientGuard, this.projectController.getConsultations);
         this.router.post(`${this.path}patient/grantPermission`, patientGuard, this.projectController.grantPermission);
         this.router.post(`${this.path}pharamcist/prescribe`, physicianGuard, this.projectController.prescribe);
     }
