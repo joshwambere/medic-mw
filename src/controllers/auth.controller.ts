@@ -1,10 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
-import AuthService from '@services/auth.service';
 import SendRequest from '@services/httpService';
 import { BACKEND_URL } from '@config';
 
 class AuthController {
-    public authService = new AuthService();
+
     public signUp = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const info = {
